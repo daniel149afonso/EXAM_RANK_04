@@ -1,30 +1,10 @@
+## Pipe: 
+- La fonction pipe()crée un canal unidirectionnel de communication entre processus : ce que l’un écrit dans l’extrémité d’écriture peut être lu par l’autre depuis l’extrémité de lecture.
+pipefd[0] : extrémité de lecture
+pipefd[1] : extrémité d’écriture
+Retourne 0 en cas de succès, -1 en cas d’erreur (errno est positionné).
 
-Assignment name:    picoshell
-Expected files:     picoshell.c
-Allowed functions:  close, fork, wait, exit, execvp, dup2, pipe
-___
+## Fork:
+La fonction fork() en C (POSIX) sert à créer un nouveau processus, dit processus fils, qui est une copie presque exacte du processus père appelant.
 
-Write the following function:
-
-int    picoshell(char *cmds[]);
-
-The goal of this function is to execute a pipeline. It must execute each
-commands [sic] of cmds and connect the output of one to the input of the
-next command (just like a shell).
-
-Cmds contains a null-terminated list of valid commands. Each rows [sic]
-of cmds are an argv array directly usable for a call to execvp. The first
-arguments [sic] of each command is the command name or path and can be passed
-directly as the first argument of execvp.
-
-If any error occur [sic], The function must return 1 (you must of course
-close all the open fds before). otherwise the function must wait all child
-processes and return 0. You will find in this directory a file main.c which
-contain [sic] something to help you test your function.
-
-
-Examples: 
-./picoshell /bin/ls "|" /usr/bin/grep picoshell
-picoshell
-./picoshell echo 'squalala' "|" cat "|" sed 's/a/b/g'
-squblblb/
+## Exec
