@@ -6,7 +6,7 @@
 /*   By: daniel149afonso <daniel149afonso@studen    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 20:19:15 by daniel149af       #+#    #+#             */
-/*   Updated: 2025/08/04 23:38:16 by daniel149af      ###   ########.fr       */
+/*   Updated: 2025/08/10 17:50:12 by daniel149af      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 
 int	main()
 {
-	int	pipefd[2];
+	int		pipefd[2];
 	pid_t	pid;
 
 	if (pipe(pipefd) == -1)
@@ -40,7 +40,7 @@ int	main()
 		close(pipefd[1]);
 		dup2(pipefd[0], STDIN_FILENO);
 		close(pipefd[0]);
-		execlp("grep", "grep", "foo", NULL);
+		execlp("grep", "grep", "subject", NULL);
 		exit(1);
 	}
 	close(pipefd[0]);
@@ -51,6 +51,39 @@ int	main()
 	printf("Dark Vador: La vérité est dans ton coeur\n");
 	return (0);
 }
+
+// int	main(int argc, char **argv)
+// {
+// 	int	cmds_size = 1;
+// 	for (int i = 0; i < argc; i++)
+// 	{
+// 		if (!strcmp(argv[i], "|"))
+// 			cmds_size++;
+		
+// 	}
+// 	char ***cmds = calloc(cmds_size + 1, sizeof(char **));
+// 	if (!cmds)
+// 	{
+// 		dprintf(2, "Malloc error: %m\n");
+// 		return (1);
+// 	}
+// 	cmds[0] = argv + 1;
+// 	int	cmds_i = 1;
+// 	for (int i = 0; i < argc; i++)
+// 	{
+// 		if (!strcmp(argv[i], "|"))
+// 		{
+// 			cmds[cmds_i] = argv + i + 1;
+// 			argv[i] = NULL;
+// 			cmds_i++;
+// 		}
+// 	}
+// 	int	ret = picoshell(cmds);
+// 	if (ret)
+// 		perror("picoshell");
+// 	free(cmds);
+// 	return (ret);
+// }
 
 // int main(void) {
 //     pid_t pid = fork();
