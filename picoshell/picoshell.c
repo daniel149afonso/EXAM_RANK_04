@@ -6,7 +6,7 @@
 /*   By: daniel149afonso <daniel149afonso@studen    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 20:19:15 by daniel149af       #+#    #+#             */
-/*   Updated: 2025/08/10 17:50:12 by daniel149af      ###   ########.fr       */
+/*   Updated: 2025/08/10 23:41:23 by daniel149af      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,37 +18,51 @@
 int	main()
 {
 	int		pipefd[2];
+	int		prev_fd;
 	pid_t	pid;
+	int		i = 0;
+	char *cmds[][3] = {
+		{"ls", "-l", NULL},
+		{"grep", "subject", NULL},
+		{NULL}
+	};
 
-	if (pipe(pipefd) == -1)
-		return (1);
-	
-	pid = fork(); //création nouveau processus
-	if (pid < 0)
-		return (1);
-	if (pid == 0)
+	while (cmds[i])
 	{
+		if (cmds[i + 1])
+		{
+			if (pipe(pipefd) == -1)
+			return (1);
+		}
+		else
+		{
+			pipefd[0] = -1;
+			pipefd[1] = -1;
+		}
+		pid = fork(); //création nouveau processus
+		if (pid < 0)
+			return (1);
+		if (pid == 0)
+		{
+			if (i == 0)
+			{
+				dup2(prev_fd, STDIN_FILENO);
+				close(prev_fd);
+			}
+			else
+			{
+				close(pipefd[0]);
+				dup2(pipefd[1], STDOUT_FILENO);
+				close(pipefd[1]);
+			}
+			execvp(cmds[i][0], cmds[i]);
+			exit(1);
+		}
+		i++;
 		close(pipefd[0]);
-		dup2(pipefd[1], STDOUT_FILENO);
 		close(pipefd[1]);
-		execlp("ls", "ls", NULL);
-		exit(1);
+		waitpid(pid, NULL, 0);
 	}
-	pid_t pid1 = fork(); 
-	if (pid1 == 0)
-	{
-		close(pipefd[1]);
-		dup2(pipefd[0], STDIN_FILENO);
-		close(pipefd[0]);
-		execlp("grep", "grep", "subject", NULL);
-		exit(1);
-	}
-	close(pipefd[0]);
-	close(pipefd[1]);
-	printf("Dark Vador: Je suis ton père\n");
-	waitpid(pid, NULL, 0);
-    waitpid(pid1, NULL, 0);
-	printf("Dark Vador: La vérité est dans ton coeur\n");
 	return (0);
 }
 
