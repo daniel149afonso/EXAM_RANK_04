@@ -6,7 +6,7 @@
 /*   By: daniel149afonso <daniel149afonso@studen    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 20:19:15 by daniel149af       #+#    #+#             */
-/*   Updated: 2025/08/10 23:41:23 by daniel149af      ###   ########.fr       */
+/*   Updated: 2025/08/11 00:40:49 by daniel149af      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 int	main()
 {
 	int		pipefd[2];
-	int		prev_fd;
+	int		prev_fd = -1;
 	pid_t	pid;
 	int		i = 0;
 	char *cmds[][3] = {
@@ -44,12 +44,12 @@ int	main()
 			return (1);
 		if (pid == 0)
 		{
-			if (i == 0)
+			if (prev_fd != 0)//Applique stdin
 			{
 				dup2(prev_fd, STDIN_FILENO);
 				close(prev_fd);
 			}
-			else
+			if (pipefd[1] != -1)//Applique stdout si pas derniere commande
 			{
 				close(pipefd[0]);
 				dup2(pipefd[1], STDOUT_FILENO);
@@ -58,11 +58,16 @@ int	main()
 			execvp(cmds[i][0], cmds[i]);
 			exit(1);
 		}
-		i++;
-		close(pipefd[0]);
-		close(pipefd[1]);
-		waitpid(pid, NULL, 0);
+		else
+		{
+			close(pipefd[0]);
+			close(pipefd[1]);
+			close(prev_fd);
+			prev_fd = pipefd[0];
+			i++;
+		}
 	}
+	waitpid(pid, NULL, 0);
 	return (0);
 }
 

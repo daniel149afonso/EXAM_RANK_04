@@ -10,5 +10,7 @@ La fonction fork() en C (POSIX) sert à créer un nouveau processus, dit process
 
 ## Exec
 
+## Close
+
 ## Questions
 1) A quoi sert l'entrée standard de la première commande
