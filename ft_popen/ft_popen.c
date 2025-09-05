@@ -6,7 +6,7 @@
 /*   By: daniel149afonso <daniel149afonso@studen    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 23:35:18 by daniel149af       #+#    #+#             */
-/*   Updated: 2025/08/11 23:48:00 by daniel149af      ###   ########.fr       */
+/*   Updated: 2025/09/05 19:40:28 by daniel149af      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,11 @@
 #include <sys/wait.h> //pid_t
 #include <unistd.h> //pipe(), fork(), execvp()
 
-int	ft_popen(const char file, char const argv[], char type)
+int	ft_popen(const char *file, char *const argv[], char type)
 {
 	if (!file || !argv || (type != 'r' && type != 'w'))
 		return (-1);
-	
+
 	int	pipefd[2];
 	if (pipe(pipefd) < 0)
 		return (-1);
@@ -34,26 +34,28 @@ int	ft_popen(const char file, char const argv[], char type)
 		if (type == 'r')
 		{
 			close(pipefd[0]);
-			dup2(pipefd[1], STDOUT_FILENO);
-			close(pipefd[1]);
+			if (dup2(pipefd[1], STDIN_FILENO) < 0)
+				exit(-1);
 		}
 		else
 		{
 			close(pipefd[1]);
-			dup2(pipefd[0], STDIN_FILENO);
-			close(pipefd[0]);
+			if (dup2(pipefd[0], STDOUT_FILENO) < 0)
+				exit(-1);
 		}
+		close(pipefd[0]);
+		close(pipefd[1]);
 		execvp(file, argv);
 		exit(-1);
 	}
 	if (type == 'r')
 	{
-		close(pipefd[0]);
-		return (pipefd[1]);
+		close(pipefd[1]);
+		return (pipefd[0]);
 	}
 	else
 	{
-		close(pipefd[1]);
-		return (pipefd[0]);
+		close(pipefd[0]);
+		return (pipefd[1]);
 	}
 }
