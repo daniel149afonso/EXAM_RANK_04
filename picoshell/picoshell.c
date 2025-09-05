@@ -6,7 +6,7 @@
 /*   By: daniel149afonso <daniel149afonso@studen    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 20:19:15 by daniel149af       #+#    #+#             */
-/*   Updated: 2025/08/11 04:02:57 by daniel149af      ###   ########.fr       */
+/*   Updated: 2025/09/05 18:48:20 by daniel149af      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,11 @@ int	picoshell(char **cmds[])
 		}
 		pid = fork(); //création processus enfant
 		if (pid < 0)
+		{
+			close(pipefd[0]);
+			close(pipefd[1]);
 			return (1);
+		}
 		if (pid == 0)
 		{
 			if (prev_fd != -1)//redirige stdin si il y a eu un pipe avant la commande
