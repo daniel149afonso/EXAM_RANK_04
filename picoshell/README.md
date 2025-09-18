@@ -1,7 +1,7 @@
 ## Résumé de fonction:
 Dans le child, la 1ere commande rentre dans le if 2.
 Les commande middle rentrent dans le if 1 et 2.
-La dernière commande rentre
+La dernière commande rentre dans le if 1. 
 ## Pipe: 
 - La fonction pipe()sert à connecter la sortie standard d’une commande à l’entrée standard de la suivante (ex. : ls | grep test.txt).
 Ce que l’un écrit dans l’extrémité d’écriture peut être lu par l’autre depuis l’extrémité de lecture.

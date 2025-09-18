@@ -6,7 +6,7 @@
 /*   By: daniel149afonso <daniel149afonso@studen    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 23:35:18 by daniel149af       #+#    #+#             */
-/*   Updated: 2025/09/05 20:17:01 by daniel149af      ###   ########.fr       */
+/*   Updated: 2025/09/18 14:15:54 by daniel149af      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ int	ft_popen(const char *file, char *const argv[], char type)
 // 	return (0);
 //}
 
-int main(void)
+int	main(void)
 {
 	int fd = ft_popen("wc", (char *const[]){"wc", "-l", NULL}, 'w');
 	if (fd < 0)

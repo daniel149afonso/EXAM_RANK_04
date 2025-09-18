@@ -6,7 +6,7 @@
 /*   By: daniel149afonso <daniel149afonso@studen    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 20:19:15 by daniel149af       #+#    #+#             */
-/*   Updated: 2025/09/05 18:48:20 by daniel149af      ###   ########.fr       */
+/*   Updated: 2025/09/18 14:35:41 by daniel149af      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,9 @@ int	picoshell(char **cmds[])
 	int		pipefd[2];
 	int		prev_fd = -1;
 	pid_t	pid;
+	int		status;
 	int		i = 0;
+	int		ret = 0;
 
 	while (cmds[i] != NULL)
 	{
@@ -30,7 +32,7 @@ int	picoshell(char **cmds[])
 			if (pipe(pipefd) == -1)
 				return (1);
 		}
-		else//si c'est la dernière commande
+		else //si c'est la dernière commande
 		{
 			pipefd[0] = -1;
 			pipefd[1] = -1;
@@ -38,38 +40,49 @@ int	picoshell(char **cmds[])
 		pid = fork(); //création processus enfant
 		if (pid < 0)
 		{
-			close(pipefd[0]);
-			close(pipefd[1]);
+			if (pipefd[0] != -1)
+				close(pipefd[0]);
+			if (pipefd[1] != -1)
+				close(pipefd[1]);
+			if (prev_fd != -1)
+				close(prev_fd);
 			return (1);
 		}
 		if (pid == 0)
 		{
 			if (prev_fd != -1)//redirige stdin si il y a eu un pipe avant la commande
 			{
-				dup2(prev_fd, STDIN_FILENO);
+				if (dup2(prev_fd, STDIN_FILENO) < 0)
+					exit(1);
 				close(prev_fd);
 			}
 			if (pipefd[1] != -1)//Redirige stdout si ce n'est pas la derniere commande
 			{
 				close(pipefd[0]);
-				dup2(pipefd[1], STDOUT_FILENO);
+				if (dup2(pipefd[1], STDOUT_FILENO) < 0)
+					exit(1);
 				close(pipefd[1]);
 			}
 			execvp(cmds[i][0], cmds[i]);
 			exit(1);
 		}
-		else//processus parent
+		else //processus parent
 		{
 			if (pipefd[1] != -1) 
 				close(pipefd[1]);
 			if (prev_fd != -1) 
 				close(prev_fd);
-			prev_fd = pipefd[0];//sauvegarde stdin pour la prochaine commande
+			prev_fd = pipefd[0]; //sauvegarde stdin pour la prochaine commande
 			i++;
 		}
 	}
-	for (int j = 0; j < i; j++)
-		wait(NULL);
+	while (wait(&status) > 0)
+	{
+		if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
+			ret = 1;
+		else if (!WIFEXITED(status))
+			ret = 1;
+	}
 	return (0);
 }
 
