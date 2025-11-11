@@ -65,6 +65,7 @@ int	ft_popen(const char *file, char *const argv[], char type)
 	}
 }
 
+//TESTING READING THE OUTPUT FILE
 // int main(void)
 // {
 // 	int fd = ft_popen("ls", (char *const[]){"ls", "-1", NULL}, 'r');
@@ -82,14 +83,15 @@ int	ft_popen(const char *file, char *const argv[], char type)
 // 	return (0);
 //}
 
-int	main(void)
-{
-	int fd = ft_popen("wc", (char *const[]){"wc", "-l", NULL}, 'w');
-	if (fd < 0)
-		return 1;
+//TESTING WRITTING IN INPUT FILE
+// int	main(void)
+// {
+// 	int fd = ft_popen("wc", (char *const[]){"wc", "-l", NULL}, 'w');
+// 	if (fd < 0)
+// 		return 1;
 
-	const char *text = "salut\ncomment\nça va\n";
-	write(fd, text, strlen(text));
-	close(fd);
-	return (0);
-}
+// 	const char *text = "salut\ncomment\nça va\n";
+// 	write(fd, text, strlen(text));
+// 	close(fd);
+// 	return (0);
+// }
