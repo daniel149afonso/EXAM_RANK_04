@@ -6,7 +6,7 @@
 /*   By: daniel149afonso <daniel149afonso@studen    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/04 00:47:31 by daniel149af       #+#    #+#             */
-/*   Updated: 2025/11/12 00:06:33 by daniel149af      ###   ########.fr       */
+/*   Updated: 2025/11/12 03:21:25 by daniel149af      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ void    handle_error(char c) {
 int primary() {
 	if (error)
 		return 0;
+	//Case 1: parenthesis
 	if (*input == '(') {
 		input++;
 		int result = sum();
@@ -43,11 +44,13 @@ int primary() {
 		input++;
 		return result;
 	}
+	//Case 2: Number
 	if (isdigit(*input)) {
 		int num = *input - '0';
 		input++;
 		return num;
 	}
+	//Case 3: Error
 	return (handle_error(*input), 0);
 }
 
