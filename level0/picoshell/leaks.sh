@@ -3,4 +3,4 @@ valgrind \
  --track-origins=yes \
  --show-leak-kinds=all \
  --track-fds=yes \
-  ./picoshell echo salut | cat
+  ./shell echo salut | cat
